@@ -1,4 +1,4 @@
-from src.interface.utils import *
+from src.interface.assets import *
 
 pg.font.init()
 
@@ -7,17 +7,22 @@ HEIGHT = 720
 TITLE = "Simulador MIPS"
 FPS = 60
 
+DEFAULT_FONT = "DejaVu Sans Mono, Noto Mono, Source Code Pro"
+
 EVENTS = {
     "show": True,
 }
 
 FONTS = {
-    "text": Text("DejaVu Sans Mono, Noto Mono, Source Code Pro", 19, (WIDTH, 0), Colors.DARK_GRAY, alignment=Align.UPPER_RIGHT),
+    "text": Text(DEFAULT_FONT, 19, (WIDTH, 0), Colors.BLACK),
+    "title": Text(DEFAULT_FONT, 50, (WIDTH, 0), Colors.BLACK, bold=True),
+    "instruction": Text(DEFAULT_FONT, 40, (WIDTH, 0), Colors.BLACK),
 }
 
 ASSETS = {
     "databox": TextBox(FONTS["text"], Info.DATA, (WIDTH - 20, 20), (200, 320), Colors.LIGHT_GRAY, Colors.WHITE, border=5, alignment=Align.UPPER_RIGHT),
     "rbox": TextBox(FONTS["text"], Info.REGS, (WIDTH - 20, HEIGHT//2 + 20), (200, 320), Colors.LIGHT_GRAY, Colors.WHITE, border=5, alignment=Align.UPPER_RIGHT),
+    "ibox": InstructionBox(FONTS["instruction"], FONTS["title"], Info.STAGES, (20, 20), (800, 680), Colors.LIGHT_GRAY, Colors.WHITE, Colors.SMOOTH_GRAY, border=5),
 }
 
 
@@ -48,8 +53,9 @@ def check_event() -> None:
             EVENTS["show"] = False
         if event.type == pg.MOUSEBUTTONDOWN:
             for asset in ASSETS.values():
-                if type(asset) == TextBox:
+                if isinstance(asset, Box):
                     asset.check_click(event.button, pg.mouse.get_pos())
+                if isinstance(asset, TextBox):
                     asset.check_line(event.button)
         if event.type == pg.KEYDOWN:
             for asset in ASSETS.values():
