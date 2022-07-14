@@ -1,4 +1,5 @@
 from bitarray import bitarray
+
 from src.Instruction import Instruction
 
 '''def dec_to_bin(dec_value: str, size: int) -> str:
@@ -65,11 +66,18 @@ def check_instruction(list_instruction: list, pos: int, labels: dict) -> Instruc
 def transforming_instruction(list_instruction: list, labels: dict, txt: bool) -> list:
     """Generates the output file. If '-t' flag is used, then the output file is a 'txt'. Otherwise, it is a 'bin' file."""
     lista_objetos_instructions = list()
+    instructions = list()
+    str_instruction = ""
     if txt:
         with open("saida.txt", 'w') as file:
             for i, l in enumerate(list_instruction):
                 instruction_obj = check_instruction(l, i, labels)  # Instrucao em forma de objeto
-                print(l)
+                for el in l:
+                    if ":" in el:
+                        el = el.split(":")[1]
+                    str_instruction = str_instruction + el + " "
+                instructions.append(str_instruction)
+                str_instruction = ""
                 lista_objetos_instructions.append(instruction_obj)  # Lista de objetos
                 file.write(f"{instruction_obj.bits()}\n")
             file.close()
@@ -84,7 +92,7 @@ def transforming_instruction(list_instruction: list, labels: dict, txt: bool) ->
                     output[i * 32 + j] = int(byte)
             output.tofile(file)
             file.close()
-    return lista_objetos_instructions
+    return lista_objetos_instructions, instructions
 
 
 def to_read(txt: bool) -> None:

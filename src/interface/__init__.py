@@ -3,7 +3,6 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame as pg
 
-
 class Info:
     DISPLAY: pg.Surface
     REGS = dict()

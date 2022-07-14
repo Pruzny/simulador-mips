@@ -1,5 +1,3 @@
-from src.Instruction import Steps
-
 
 class RegisterPipeline:
 
@@ -19,6 +17,3 @@ class RegisterPipeline:
             self.EX_MEM = True
         elif stretapa.upper() == "MEM_WB":
             self.MEM_WB = True
-
-    def set_instruction_in_register_pipe(self, instruction_step: Steps):
-        self.instruction = instruction_step
