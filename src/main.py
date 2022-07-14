@@ -4,9 +4,10 @@ from src.pipeline_execution.PipelineExecution import execute_pipeline
 from src.pipeline_execution.RegisterPipeline import RegisterPipeline
 from src.utils import create_labels, transforming_instruction
 
-lista = read_asm()
+lista, data = read_asm()
 labels = create_labels(lista)
 
+print(data)
 start_values()
 
 QUANTIDADES_REGISTRADORES_PIPELINE = 4

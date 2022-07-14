@@ -28,17 +28,39 @@ def read_registers() -> dict[str, str]:
     return registers
 
 
-def read_asm() -> list:
+def verificarFuncao(line):
+    if ":" in line[-1] and line[-1][-1] == ":":
+        return False
+    return True
+
+
+def read_asm() -> tuple[list, list]:
     """Reads the input file and returns a list with each line as an element. If there is not an input file 'entrada.asm', it reads the default 'exemplo.asm' file."""
     pattern = r"[ ,]"
     instruction_list = list()
+    data_list = list()
+    continue_data = False
+
     try:
-        file = open("entrada.asm", 'r')
+        file = open("base/exemplodata.asm", 'r')
     except FileNotFoundError:
         file = open("base/exemplo.asm", 'r')
     for line in file.readlines():
-        line = re.split(pattern, line.replace("\n", "").lower())
-        for i in range(line.count("")):
-            line.remove("")
-        instruction_list.append(line)
-    return instruction_list
+        if ".data" in line or continue_data:
+            line = re.split(pattern, line.replace("\n", "").lower())
+            for i in range(line.count("")):
+                line.remove("")
+            continue_data = True
+            if ".text" in line:
+                continue_data = False
+            if len(line) > 0 and continue_data:
+                data_list.append(line)
+        else:
+            line = re.split(pattern, line.replace("\n", "").lower())
+            for i in range(line.count("")):
+                line.remove("")
+            if len(line) > 0 and "li" not in line and "syscall" not in line and verificarFuncao(line):
+                instruction_list.append(line)
+    data_list.pop(0)
+    print(instruction_list)
+    return instruction_list, data_list
