@@ -128,7 +128,7 @@ class TextBox(Box):
         for line in lines[self.first_line:self.first_line + 13]:
             text = self.font.render(line)
             self.image.blit(text, ((self.width - text.get_width())//2 + self.border, y))
-            y += text.get_height()
+            y += text.get_height() - 1
 
         Info.DISPLAY.blit(self.image, (self.x, self.y))
 

@@ -7,7 +7,7 @@ HEIGHT = 720
 TITLE = "Simulador MIPS"
 FPS = 60
 
-DEFAULT_FONT = "DejaVu Sans Mono, Noto Mono, Source Code Pro"
+DEFAULT_FONT = "Source Code Pro"
 
 EVENTS = {
     "show": True,
@@ -20,16 +20,20 @@ FONTS = {
 }
 
 ASSETS = {
-    "databox": TextBox(FONTS["text"], Info.DATA, (WIDTH - 20, 20), (200, 320), Colors.LIGHT_GRAY, Colors.WHITE, border=5, alignment=Align.UPPER_RIGHT),
-    "rbox": TextBox(FONTS["text"], Info.REGS, (WIDTH - 20, HEIGHT//2 + 20), (200, 320), Colors.LIGHT_GRAY, Colors.WHITE, border=5, alignment=Align.UPPER_RIGHT),
-    "ibox": InstructionBox(FONTS["instruction"], FONTS["title"], Info.STAGES, (20, 20), (800, 680), Colors.LIGHT_GRAY, Colors.WHITE, Colors.SMOOTH_GRAY, border=5),
+    "databox": TextBox(FONTS["text"], Info.DATA, (WIDTH - 20, 20), (200, 320), Colors.LIGHT_GRAY, Colors.WHITE,
+                       border=5, alignment=Align.UPPER_RIGHT),
+    "rbox": TextBox(FONTS["text"], Info.REGS, (WIDTH - 20, HEIGHT // 2 + 20), (200, 320), Colors.LIGHT_GRAY,
+                    Colors.WHITE, border=5, alignment=Align.UPPER_RIGHT),
+    "ibox": InstructionBox(FONTS["instruction"], FONTS["title"], Info.STAGES, (20, 20), (800, 680), Colors.LIGHT_GRAY,
+                           Colors.WHITE, Colors.SMOOTH_GRAY, border=5),
 }
 
 
-def main() -> None:
-    DISPLAY = start_display()
-    Info.set_values(DISPLAY)
+def start_values() -> None:
+    Info.set_values(start_display())
 
+
+def main() -> None:
     clock = pg.time.Clock()
     pg.display.set_caption(TITLE)
 
