@@ -1,4 +1,3 @@
-
 class RegisterPipeline:
 
     def __init__(self, stretapa: str):
@@ -17,3 +16,6 @@ class RegisterPipeline:
             self.EX_MEM = True
         elif stretapa.upper() == "MEM_WB":
             self.MEM_WB = True
+
+    def __str__(self):
+        return self.name + " " + self.instruction.str
