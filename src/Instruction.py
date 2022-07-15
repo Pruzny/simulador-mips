@@ -7,7 +7,8 @@ class Instruction:
     type_dict, opcode_dict, function_dict = read_instructions()
 
     def __init__(self, name: str, has_label_start: int, has_label_final: bool, instruction_in_form_list: list[str],
-                 pos: int, labels: dict, instruction_string: str):
+                 pos: int, instruction_string: str):
+        labels = Simulador.labels
         self.name = name
         self.opcode = name
         self.has_label_start = has_label_start

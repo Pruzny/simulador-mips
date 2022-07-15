@@ -1,4 +1,5 @@
 from os import environ
+
 environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame as pg
@@ -16,7 +17,6 @@ class Info:
             Info.REGS[line[:-1]] = 0
         for line in open("base/stages.txt", "r").readlines():
             Info.STAGES[line[:-1]] = ""
-
 
 class Colors:
     WHITE = (255, 255, 255)

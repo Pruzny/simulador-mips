@@ -60,15 +60,13 @@ def check_event() -> None:
                 if isinstance(asset, Box):
                     asset.check_click(event.button, pg.mouse.get_pos())
                 if isinstance(asset, TextBox):
-                    asset.check_line(event.button)
+                    asset.check_key(event.button)
         if event.type == pg.KEYDOWN:
             for asset in ASSETS.values():
-                if type(asset) == TextBox:
-                    asset.check_line(event.key)
+                if type(asset) == TextBox or type(asset) == InstructionBox:
+                    asset.check_key(event.key)
 
 
 def draw() -> None:
     for asset in ASSETS.values():
         asset.draw()
-
-

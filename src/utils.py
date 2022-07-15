@@ -34,12 +34,10 @@ def check_instruction(instruction_in_form_list: list[str], pos: int, labels: dic
 
     if not has_label_init:
         instruction_obj = Instruction(
-            instruction_in_form_list[0], offset, has_label_final, instruction_in_form_list, pos,
-            labels, instruction_string)
+            instruction_in_form_list[0], offset, has_label_final, instruction_in_form_list, pos, instruction_string)
     else:
         instruction_obj = Instruction(
-            instruction_in_form_list[1], offset, has_label_final, instruction_in_form_list, pos,
-            labels, instruction_string)
+            instruction_in_form_list[1], offset, has_label_final, instruction_in_form_list, pos, instruction_string)
     return instruction_obj
 
 
@@ -57,6 +55,7 @@ def transforming_instruction(list_instruction: list, labels: dict) -> list:
         lista_objetos_instructions.append(instruction_obj)  # Lista de objetos
 
     return lista_objetos_instructions
+
 
 def to_read(txt: bool) -> None:
     """Prints each line of the corresponding output file."""

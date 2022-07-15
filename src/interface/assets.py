@@ -15,7 +15,8 @@ class Text:
     color: tuple[int, int, int]
     size: int
 
-    def __init__(self, font: str, size: int, pos: tuple[int, int], color: tuple[int, int, int], bold: bool = False) -> None:
+    def __init__(self, font: str, size: int, pos: tuple[int, int], color: tuple[int, int, int],
+                 bold: bool = False) -> None:
         self.font = pg.font.SysFont(font, size, bold=bold)
         self.pos = pos
         self.color = color
@@ -88,7 +89,9 @@ class Box:
             color = self.unselected_color
 
         pg.draw.rect(self.image, self.border_color, (0, 0, self.width, self.height), border_radius=self.border_radius)
-        pg.draw.rect(self.image, color, (self.border, self.border, self.width - self.border * 2, self.height - self.border * 2), border_radius=self.border_radius)
+        pg.draw.rect(self.image, color,
+                     (self.border, self.border, self.width - self.border * 2, self.height - self.border * 2),
+                     border_radius=self.border_radius)
 
     def draw(self) -> None:
         self.draw_box()
@@ -110,10 +113,11 @@ class TextBox(Box):
                  border_radius: int = 20,
                  alignment: int = Align.UPPER_LEFT,
                  ) -> None:
-        super().__init__(font, text, pos, dimensions, unselected_color, selected_color, border, border_color, border_radius, alignment)
+        super().__init__(font, text, pos, dimensions, unselected_color, selected_color, border, border_color,
+                         border_radius, alignment)
         self.first_line = 0
 
-    def check_line(self, key: int):
+    def check_key(self, key: int):
         if self.selected:
             if (key == pg.K_DOWN or key == 5) and self.first_line < len(self.text) - 13 and len(self.text) > 13:
                 self.first_line += 1
@@ -127,7 +131,7 @@ class TextBox(Box):
         lines = tuple(f"{reg}: {format(int(value), f'08x')}" for reg, value in self.text.items())
         for line in lines[self.first_line:self.first_line + 13]:
             text = self.font.render(line)
-            self.image.blit(text, ((self.width - text.get_width())//2 + self.border, y))
+            self.image.blit(text, ((self.width - text.get_width()) // 2 + self.border, y))
             y += text.get_height() - 1
 
         Info.DISPLAY.blit(self.image, (self.x, self.y))
@@ -151,7 +155,8 @@ class InstructionBox(TextBox):
                  border_radius: int = 20,
                  alignment: int = Align.UPPER_LEFT,
                  ) -> None:
-        super().__init__(font, text, pos, dimensions, unselected_color, selected_color, border, border_color, border_radius, alignment)
+        super().__init__(font, text, pos, dimensions, unselected_color, selected_color, border, border_color,
+                         border_radius, alignment)
         self.title_font = title_font
         self.line_color = line_color
 
@@ -167,13 +172,18 @@ class InstructionBox(TextBox):
         line_y = self.border + base_distance // 4
         for stage, instruction in zip(header, lines):
             title = self.title_font.render(stage)
-            title_x = self.image.get_width() - line_width - (self.border + base_distance // 4) - title.get_width() - base_distance // 2
+            title_x = self.image.get_width() - line_width - (
+                        self.border + base_distance // 4) - title.get_width() - base_distance // 2
             title_y = line_y + (line_height - title.get_height()) // 2
             self.image.blit(title, (title_x, title_y))
-            pg.draw.rect(self.image, self.border_color, (line_x, line_y, line_width, line_height), border_radius=self.border_radius)
-            pg.draw.rect(self.image, self.line_color, (line_x + self.border, line_y + self.border, line_width - self.border * 2, line_height - self.border * 2), border_radius=self.border_radius)
+            pg.draw.rect(self.image, self.border_color, (line_x, line_y, line_width, line_height),
+                         border_radius=self.border_radius)
+            pg.draw.rect(self.image, self.line_color, (
+            line_x + self.border, line_y + self.border, line_width - self.border * 2, line_height - self.border * 2),
+                         border_radius=self.border_radius)
             line = self.font.render(instruction)
-            self.image.blit(line, (line_x + (line_width - line.get_width()) // 2, line_y + (line_height - line.get_height()) // 2))
+            self.image.blit(line, (
+            line_x + (line_width - line.get_width()) // 2, line_y + (line_height - line.get_height()) // 2))
             line_y += base_distance * 2
 
         Info.DISPLAY.blit(self.image, (self.x, self.y))
