@@ -16,7 +16,7 @@ class Info:
     def set_values(display: pg.Surface):
         Info.DISPLAY = display
         for line in open("base/registers.txt", "r").readlines():
-            Info.REGS[line[:-1]] = 0
+            Info.REGS[line[:-1]] = "00000000"
         for line in open("base/stages.txt", "r").readlines():
             Info.STAGES[line[:-1]] = ""
 

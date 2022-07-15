@@ -116,8 +116,6 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                     label = instruction_name.split(":")[1]
                     for i in range(len(Simulador.blocks[label])):
                         instructions.insert(index, Simulador.blocks[label][i])
-
-
                 check_instruction_hazard(instructions, registradores_pipeline)
                 set_instruction_exec_id(instructions_in_execution[1], instructions_in_execution[1].str,
                                         instruction_executadas)

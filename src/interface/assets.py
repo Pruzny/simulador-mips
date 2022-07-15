@@ -130,7 +130,7 @@ class TextBox(Box):
         self.draw_box()
 
         y = self.border * 2
-        lines = tuple(f"{reg}: {format(int(value), f'08x')}" for reg, value in self.text.items())
+        lines = tuple(f"{reg}: {value}" for reg, value in self.text.items())
         for line in lines[self.first_line:self.first_line + 13]:
             text = self.font.render(line)
             self.image.blit(text, ((self.width - text.get_width()) // 2 + self.border, y))

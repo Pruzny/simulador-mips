@@ -6,17 +6,17 @@ LIST_PSEUDO = ["li", "la"]
 SIZE = 4
 
 
-def dec_to_hex(dec_value: int) -> str:
+def dec_to_hex(dec_value: int, size: int = SIZE) -> str:
     """Receives a positive decimal value and returns its hex conversion with the correct length of bytes."""
     dec_value_int = int(dec_value)
 
     if dec_value_int < 0:
-        if dec_value_int < -16 ** (SIZE - 1):
+        if dec_value_int < -16 ** (size - 1):
             raise ValueError("Valor imediato menor do que o tamanho suportado.")
-    elif dec_value_int >= 16 ** SIZE:
+    elif dec_value_int >= 16 ** size:
         raise ValueError("Valor imediato maior do que o tamanho suportado.")
     else:
-        return format(dec_value_int, f"0{SIZE}x")
+        return format(dec_value_int, f"0{size}x")
 
 
 def hex_to_dec(hex_value: str) -> int:
@@ -100,42 +100,87 @@ class Instruction:
             else:
                 return self.opcode + self.immediate
 
+    def check_hazard(self) -> None:
+        if self.hazard_rs == "ForwardA":
+            self.rs_value = Simulador.list_registers_pipeline[2].instruction.result
+            self.hazard_rs = ""
+        if self.hazard_rt == "ForwardB":
+            self.rt_value = Simulador.list_registers_pipeline[2].instruction.result
+            self.hazard_rt = ""
+        if self.hazard_rs == "ForwardC":
+            self.rs_value = Simulador.list_registers_pipeline[3].instruction.result
+            self.hazard_rs = ""
+        if self.hazard_rt == "ForwardD":
+            self.rt_value = Simulador.list_registers_pipeline[3].instruction.result
+            self.hazard_rt = ""
+
+    def id(self):
+        if self.rs is not None:
+            self.rs_value = Info.REGS[self.rs]
+        if self.rt is not None:
+            self.rt_value = Info.REGS[self.rt]
+
     def calculate(self) -> None:
+        self.check_hazard()
         match self.name:
             case "add":
-                self.result = dec_to_hex(hex_to_dec(Info.REGS[self.rs]) + hex_to_dec(Info.REGS[self.rt]))
+                self.result = dec_to_hex(hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value), 8)
             case "addi":
-                self.result = dec_to_hex(hex_to_dec(Info.REGS[self.rs]) + int(self.immediate))
+                self.result = dec_to_hex(hex_to_dec(self.rs_value) + int(self.immediate), 8)
             case "and":
                 self.result = ""
-                for bit1, bit2 in zip(Info.REGS[self.rs], Info.REGS[self.rt]):
+                for bit1, bit2 in zip(self.rs_value, self.rt_value):
                     self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
             # case "beq":
             #
             # case "bne":
             #
-            case "j":
-                pc = int(self.immediate)
-                Simulador.instructions_queue = Simulador.instructions_queue[:pc - 1] + Simulador.instructions[pc:]
             # case "jal":
             #
             # case "jr":
             #
-            # case "lw":
-            #
+            case "lw":
+                self.result = Info.DATA[dec_to_hex(hex_to_dec(self.rs_value), 4)]
             case "or":
                 self.result = ""
-                for bit1, bit2 in zip(Info.REGS[self.rs], Info.REGS[self.rt]):
+                for bit1, bit2 in zip(self.rs_value, self.rt_value):
                     self.result += "1" if bit1 != "0" or bit2 != "0" else "0"
             case "sll":
-                self.result = Info.REGS[self.rs][int(self.immediate):] + "0" * int(self.immediate)
+                offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
+                self.result = self.rs_value[offset:] + "0" * int(offset)
             case "srl":
-                self.result = "0" * int(self.immediate) + Info.REGS[self.rs][:int(self.immediate)]
+                offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
+                self.result = "0" * offset + self.rs_value[:8 - offset]
             # case "sw":
             #
             case "sub":
-                value = hex_to_dec(Info.REGS[self.rs]) + hex_to_dec(Info.REGS[self.rt])
-                self.result = dec_to_hex(value) if value >= 0 else dec_to_hex(0)
+                value = hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value)
+                self.result = dec_to_hex(value, 8) if value >= 0 else dec_to_hex(0, 8)
+            case "li":
+                self.result = dec_to_hex(int(self.immediate), 8)
+
+    def mem(self) -> None:
+        self.check_hazard()
+        match self.name:
+            case "lw":
+                self.result = Info.DATA[dec_to_hex(hex_to_dec(self.rs_value) + int(self.immediate), 4)]
+            case "sw":
+                Info.DATA[dec_to_hex(hex_to_dec(self.rs_value) + int(self.immediate), 4)] = self.rt_value
+
+    def wb(self) -> None:
+        match self.name:
+            case "sw":
+                pass
+            case "lw":
+                Info.REGS[self.rt] = self.result
+            case _:
+                match self.type:
+                    case "i":
+                        if self.name != "beq" and self.name != "bne":
+                            Info.REGS[self.rt] = self.result
+                    case "r":
+                        if self.name != "jr":
+                            Info.REGS[self.rd] = self.result
 
     def __str__(self):
         text = ""

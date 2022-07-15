@@ -14,6 +14,7 @@ FORWARDING_TYPES_RT = ['ForwardB', 'ForwardD']
 
 def create_bolha():
     bolha = Instruction(BOLHA_INSTRUCTION_LIST[0], 0, False, BOLHA_INSTRUCTION_LIST, 0, "NOP")
+    bolha.id()
     return bolha
 
 
