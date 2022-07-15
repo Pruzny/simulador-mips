@@ -31,7 +31,6 @@ def check_instruction(instruction_in_form_list: list[str], pos: int, labels: dic
                                         instruction_in_form_list[3]]
         else:
             instruction_in_form_list = ["add", instruction_in_form_list[1], "$zero", instruction_in_form_list[2]]
-
     if not has_label_init:
         instruction_obj = Instruction(
             instruction_in_form_list[0], offset, has_label_final, instruction_in_form_list, pos, instruction_string)

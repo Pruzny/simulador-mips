@@ -15,7 +15,8 @@ def check_instruction_jump(instructions, regs_pipeline):
             instructions.insert(index, bolha)
             instructions.insert(index+1, bolha)
             edit_list = True
-    return edit_list
+            return edit_list, index + 2, regs_pipeline[1].instruction.str
+    return edit_list, 0, ""
 
 
 def set_instruction(stage: str, instruction: str):
@@ -107,7 +108,14 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
             except:
                 set_instruction_vazia("IF")
             if not entry_in_exception:
-                check_instruction_jump(instructions, registradores_pipeline)
+
+                entry_list, index, instruction_name = check_instruction_jump(instructions, registradores_pipeline)
+                if entry_list:
+                    label = instruction_name.split(":")[1]
+                    for i in range(len(Simulador.blocks[label])):
+                        instructions.insert(index, Simulador.blocks[label][i])
+
+
                 check_instruction_hazard(instructions, registradores_pipeline)
                 set_instruction_exec_id(instructions_in_execution[1], instructions_in_execution[1].str,
                                         instruction_executadas)
@@ -136,7 +144,11 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
             except:
                 set_instruction_vazia("IF")
             if not entry_in_exception:
-                check_instruction_jump(instructions, registradores_pipeline)
+                entry_list, index, instruction_name = check_instruction_jump(instructions, registradores_pipeline)
+                if entry_list:
+                    label = instruction_name.split(":")[1]
+                    for i in range(len(Simulador.blocks[label])):
+                        instructions.insert(index, Simulador.blocks[label][i])
                 check_instruction_hazard(instructions, registradores_pipeline)
                 set_instruction_exec_id(instructions_in_execution[2], instructions_in_execution[2].str,
                                         instruction_executadas)
@@ -187,7 +199,12 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                 else:
                     set_instruction_vazia("ID")
                 if reg_ID_EX:
-                    check_instruction_jump(instructions, registradores_pipeline)
+                    entry_list, index, instruction_name = check_instruction_jump(instructions, registradores_pipeline)
+                    if entry_list:
+                        print(instruction_name)
+                        label = instruction_name.split(" ")[1]
+                        for i in reversed(Simulador.blocks[label]):
+                            instructions.insert(index, i)
                     set_instruction_exec_ex(instructions_in_execution[2], instructions_in_execution[2].str,
                                             instruction_executadas)
                 else:
