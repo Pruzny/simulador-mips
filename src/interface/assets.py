@@ -1,5 +1,6 @@
 from src.interface import *
-from src.pipeline_execution.Simulador import Simulador
+from src.pipeline_execution.PipelineExecution import execute
+from src.Instruction import dec_to_hex
 
 
 class Align:
@@ -165,7 +166,7 @@ class InstructionBox(TextBox):
         if self.selected:
             if key == pg.K_SPACE:
                 Info.sum_stage()
-                Simulador.execute()
+                execute()
 
     def draw(self) -> None:
         self.draw_box()
@@ -180,17 +181,17 @@ class InstructionBox(TextBox):
         for stage, instruction in zip(header, lines):
             title = self.title_font.render(stage)
             title_x = self.image.get_width() - line_width - (
-                        self.border + base_distance // 4) - title.get_width() - base_distance // 2
+                    self.border + base_distance // 4) - title.get_width() - base_distance // 2
             title_y = line_y + (line_height - title.get_height()) // 2
             self.image.blit(title, (title_x, title_y))
             pg.draw.rect(self.image, self.border_color, (line_x, line_y, line_width, line_height),
                          border_radius=self.border_radius)
             pg.draw.rect(self.image, self.line_color, (
-            line_x + self.border, line_y + self.border, line_width - self.border * 2, line_height - self.border * 2),
+                line_x + self.border, line_y + self.border, line_width - self.border * 2, line_height - self.border * 2),
                          border_radius=self.border_radius)
             line = self.font.render(instruction)
             self.image.blit(line, (
-            line_x + (line_width - line.get_width()) // 2, line_y + (line_height - line.get_height()) // 2))
+                line_x + (line_width - line.get_width()) // 2, line_y + (line_height - line.get_height()) // 2))
             line_y += base_distance * 2
 
         Info.DISPLAY.blit(self.image, (self.x, self.y))

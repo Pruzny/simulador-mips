@@ -63,5 +63,4 @@ def read_asm() -> tuple[list, list]:
                 instruction_list.append(line)
     if data_list.__len__() > 0:
         data_list.pop(0)
-    print(instruction_list)
     return instruction_list, data_list

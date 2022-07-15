@@ -1,9 +1,6 @@
 from src.Instruction import Instruction
 
 
-
-
-
 def create_labels(list_instruction: list[str]) -> dict:
     """Generates an dictionary mapping each label of the input file to its corresponding line (starting from 0)."""
     labels = dict()
@@ -15,7 +12,7 @@ def create_labels(list_instruction: list[str]) -> dict:
 
 
 def check_instruction(instruction_in_form_list: list[str], pos: int, labels: dict,
-                      instruction_string: str) -> Instruction:
+                      instruction_string: str):
     """Generates and returns an object of the instruction."""
     last_word_instruction = instruction_in_form_list[-1]
     has_label_init = False

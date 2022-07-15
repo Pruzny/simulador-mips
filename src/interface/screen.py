@@ -1,4 +1,8 @@
+from src.file import read_asm
 from src.interface.assets import *
+from src.pipeline_execution.RegisterPipeline import RegisterPipeline
+from src.pipeline_execution.Simulador import Simulador
+from src.utils import create_labels, transforming_instruction
 
 pg.font.init()
 
@@ -31,6 +35,16 @@ ASSETS = {
 
 def start_values() -> None:
     Info.set_values(start_display())
+    Simulador.list_asm, Simulador.data = read_asm()
+    Simulador.labels = create_labels(Simulador.list_asm)
+    Simulador.instructions = transforming_instruction(Simulador.list_asm, Simulador.labels)
+    Simulador.instructions_queue = Simulador.instructions[:]
+    Simulador.list_registers_pipeline = list(
+        RegisterPipeline(Simulador.nomes_registradores_pipeline[i]) for i in range(Simulador.QUANTIDADES_REGISTRADORES_PIPELINE))
+    for i in range(250):
+        Info.DATA[dec_to_hex(i)] = dec_to_hex(0)
+    for label, index in Simulador.labels.items():
+        Simulador.blocks[label] = Simulador.instructions[index:]
 
 
 def show_screen() -> None:

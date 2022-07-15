@@ -1,9 +1,27 @@
 from src.file import *
 from src.interface import Info
 from src.pipeline_execution.Simulador import Simulador
-from src.utils import create_labels
 
 LIST_PSEUDO = ["li", "la"]
+SIZE = 4
+
+
+def dec_to_hex(dec_value: int) -> str:
+    """Receives a positive decimal value and returns its hex conversion with the correct length of bytes."""
+    dec_value_int = int(dec_value)
+
+    if dec_value_int < 0:
+        if dec_value_int < -16 ** (SIZE - 1):
+            raise ValueError("Valor imediato menor do que o tamanho suportado.")
+    elif dec_value_int >= 16 ** SIZE:
+        raise ValueError("Valor imediato maior do que o tamanho suportado.")
+    else:
+        return format(dec_value_int, f"0{SIZE}x")
+
+
+def hex_to_dec(hex_value: str) -> int:
+    """Receives a hex value and returns its decimal conversion."""
+    return int(hex_value, 16)
 
 
 class Instruction:
@@ -71,6 +89,43 @@ class Instruction:
                 return self.opcode + self.rs + self.rt + self.immediate
             else:
                 return self.opcode + self.immediate
+
+    def calculate(self) -> None:
+        match self.name:
+            case "add":
+                self.result = dec_to_hex(hex_to_dec(Info.REGS[self.rs]) + hex_to_dec(Info.REGS[self.rt]))
+            case "addi":
+                self.result = dec_to_hex(hex_to_dec(Info.REGS[self.rs]) + int(self.immediate))
+            case "and":
+                self.result = ""
+                for bit1, bit2 in zip(Info.REGS[self.rs], Info.REGS[self.rt]):
+                    self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
+            # case "beq":
+            #
+            # case "bne":
+            #
+            case "j":
+                pc = int(self.immediate)
+                Simulador.instructions_queue = Simulador.instructions_queue[:pc - 1] + Simulador.instructions[pc:]
+            # case "jal":
+            #
+            # case "jr":
+            #
+            # case "lw":
+            #
+            case "or":
+                self.result = ""
+                for bit1, bit2 in zip(Info.REGS[self.rs], Info.REGS[self.rt]):
+                    self.result += "1" if bit1 != "0" or bit2 != "0" else "0"
+            case "sll":
+                self.result = Info.REGS[self.rs][int(self.immediate):] + "0" * int(self.immediate)
+            case "srl":
+                self.result = "0" * int(self.immediate) + Info.REGS[self.rs][:int(self.immediate)]
+            # case "sw":
+            #
+            case "sub":
+                value = hex_to_dec(Info.REGS[self.rs]) + hex_to_dec(Info.REGS[self.rt])
+                self.result = dec_to_hex(value) if value >= 0 else dec_to_hex(0)
 
     def __str__(self):
         text = ""

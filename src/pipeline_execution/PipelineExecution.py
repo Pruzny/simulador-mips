@@ -1,13 +1,28 @@
 from src.hazard_detection.unidade_hazard_detection import check_instruction_hazard, create_bolha
 from src.interface import Info
 from src.pipeline_execution import RegisterPipeline
+from src.pipeline_execution.Simulador import Simulador
+
+LIST_JUMP = ["j"]
+
+
+def check_instruction_jump(instructions, regs_pipeline):
+    edit_list = False
+    if regs_pipeline[1].ID_EX:
+        if regs_pipeline[1].instruction.name in LIST_JUMP:
+            bolha = create_bolha()
+            index = instructions.index(regs_pipeline[0].instruction)
+            instructions.insert(index, bolha)
+            instructions.insert(index+1, bolha)
+            edit_list = True
+    return edit_list
 
 
 def set_instruction(stage: str, instruction: str):
     Info.STAGES[stage] = instruction
 
 
-def set_instruction_exec_if(instruction: Instruction, instruction_str: str, instruction_executadas: dict):
+def set_instruction_exec_if(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="IF", instruction=instruction_str)
     instruction_executadas["IF"] = instruction
     instruction.stage = "IF"
@@ -17,25 +32,25 @@ def set_instruction_vazia(stage: str):
     set_instruction(stage, "")
 
 
-def set_instruction_exec_id(instruction: Instruction, instruction_str: str, instruction_executadas: dict):
+def set_instruction_exec_id(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="ID", instruction=instruction_str)
     instruction_executadas["ID"] = instruction
     instruction.stage = "ID"
 
 
-def set_instruction_exec_ex(instruction: Instruction, instruction_str: str, instruction_executadas: dict):
+def set_instruction_exec_ex(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="EX", instruction=instruction_str)
     instruction_executadas["EX"] = instruction
     instruction.stage = "EX"
 
 
-def set_instruction_exec_mem(instruction: Instruction, instruction_str: str, instruction_executadas: dict):
+def set_instruction_exec_mem(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="MEM", instruction=instruction_str)
     instruction_executadas["MEM"] = instruction
     instruction.stage = "MEM"
 
 
-def set_instruction_exec_wb(instruction: Instruction, instruction_str: str, instruction_executadas: dict):
+def set_instruction_exec_wb(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="WB", instruction=instruction_str)
     instruction_executadas["WB"] = instruction
     instruction.stage = "WB"
@@ -191,3 +206,12 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
             if len(instructions) > 0:
                 instructions.pop(0)
 
+
+def execute():
+    execute_pipeline(
+        Info.pipeline_stage,
+        Simulador.instructions_queue,
+        Simulador.instructions_executadas,
+        True,
+        Simulador.list_registers_pipeline
+    )
