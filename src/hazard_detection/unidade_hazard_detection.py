@@ -2,7 +2,7 @@ from src.Instruction import Instruction
 from src.pipeline_execution import RegisterPipeline
 
 BOLHA_INSTRUCTION_LIST = ['sll', '$zero', '$zero', '0']
-LIST_INSTRUCTION_DESVIO = ["beq", "j", "bne", "jr", "jal"]
+LIST_INSTRUCTION_DESVIO = ["beq", "bne", ]
 FORWARDING_TYPES = ['ForwardA', 'ForwardB', 'ForwardC', 'ForwardD']  # 10, 10, 01, 01
 
 
@@ -28,15 +28,21 @@ def check_instruction_hazard_dados_forwarding(regs_pipeline: list[RegisterPipeli
 
 
 def check_hazards_dados_load(regs_pipeline: list[RegisterPipeline], instructions: list[Instruction]):
-    print(regs_pipeline[0].instruction.str)
-    print(regs_pipeline[1].instruction.str)
-
     if regs_pipeline[0].IF_ID and regs_pipeline[1].ID_EX:
-        if regs_pipeline[0].instruction.name == "lw":
-            if regs_pipeline[0].instruction.rt == regs_pipeline[1].instruction.rd or regs_pipeline[0].instruction.rs == \
-                    regs_pipeline[1].instruction.rd:
+        if regs_pipeline[1].instruction.name == "lw":
+            if regs_pipeline[1].instruction.rt == regs_pipeline[0].instruction.rs or regs_pipeline[0].instruction.rt == regs_pipeline[1].instruction.rt:
                 bolha = create_bolha()
-                index = instructions.index(regs_pipeline[0].Instruction)
+                index = instructions.index(regs_pipeline[0].instruction)
+                instructions.insert(index, bolha)
+
+
+def check_hazard_controle_desvio(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):
+    CAMINHO_TOMADO = False
+    if regs_pipeline[0].IF_ID:
+        if regs_pipeline[0].instruction.name in LIST_INSTRUCTION_DESVIO:
+            if CAMINHO_TOMADO:
+                bolha = create_bolha()
+                index = instructions.index(regs_pipeline[0].instruction)
                 instructions.insert(index, bolha)
 
 
