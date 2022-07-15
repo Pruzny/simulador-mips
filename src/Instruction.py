@@ -1,4 +1,7 @@
 from src.file import *
+from src.interface import Info
+from src.pipeline_execution.Simulador import Simulador
+from src.utils import create_labels
 
 LIST_PSEUDO = ["li", "la"]
 
@@ -16,6 +19,7 @@ class Instruction:
         self.rt = instruction_in_form_list[1 + has_label_start]
         self.str = instruction_string
         self.stage = None
+        self.result = ""
 
         if self.opcode in LIST_PSEUDO:
             self.type = "p"

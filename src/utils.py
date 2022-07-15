@@ -1,6 +1,9 @@
 from src.Instruction import Instruction
 
 
+
+
+
 def create_labels(list_instruction: list[str]) -> dict:
     """Generates an dictionary mapping each label of the input file to its corresponding line (starting from 0)."""
     labels = dict()

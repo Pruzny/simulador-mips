@@ -33,7 +33,7 @@ def start_values() -> None:
     Info.set_values(start_display())
 
 
-def main() -> None:
+def show_screen() -> None:
     clock = pg.time.Clock()
     pg.display.set_caption(TITLE)
 

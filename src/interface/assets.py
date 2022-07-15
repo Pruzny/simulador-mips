@@ -1,4 +1,5 @@
 from src.interface import *
+from src.pipeline_execution.Simulador import Simulador
 
 
 class Align:
@@ -159,6 +160,12 @@ class InstructionBox(TextBox):
                          border_radius, alignment)
         self.title_font = title_font
         self.line_color = line_color
+
+    def check_key(self, key: int):
+        if self.selected:
+            if key == pg.K_SPACE:
+                Info.sum_stage()
+                Simulador.execute()
 
     def draw(self) -> None:
         self.draw_box()

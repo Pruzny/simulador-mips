@@ -4,11 +4,13 @@ environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 
 import pygame as pg
 
+
 class Info:
     DISPLAY: pg.Surface
     REGS = dict()
     DATA = dict()
     STAGES = dict()
+    pipeline_stage = -1
 
     @staticmethod
     def set_values(display: pg.Surface):
@@ -17,6 +19,11 @@ class Info:
             Info.REGS[line[:-1]] = 0
         for line in open("base/stages.txt", "r").readlines():
             Info.STAGES[line[:-1]] = ""
+
+    @staticmethod
+    def sum_stage():
+        Info.pipeline_stage += 1
+
 
 class Colors:
     WHITE = (255, 255, 255)
