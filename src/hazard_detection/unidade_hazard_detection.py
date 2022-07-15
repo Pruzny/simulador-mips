@@ -3,7 +3,11 @@ from src.pipeline_execution import RegisterPipeline
 
 BOLHA_INSTRUCTION_LIST = ['sll', '$zero', '$zero', '0']
 LIST_INSTRUCTION_DESVIO = ["beq", "bne", ]
-FORWARDING_TYPES = ['ForwardA', 'ForwardB', 'ForwardC', 'ForwardD']  # 10, 10, 01, 01
+FORWARDING_TYPES_RS = ['ForwardA', 'ForwardC']  # A B REG 2 C D 3
+FORWARDING_TYPES_RT = ['ForwardB', 'ForwardD']
+
+
+# regs_pipeline[2].instruction.result #regs_pipeline[3].instruction.result
 
 
 # nomes_registradores_pipeline = ["IF_ID", "ID_EX", "EX_MEM", "MEM_WB"] = REG[0] = IF_ID | REG[1] = ID_EX | REG[2] = EX_MEM | REG[3] = MEM_WB
@@ -13,18 +17,28 @@ def create_bolha():
     return bolha
 
 
-def check_instruction_hazard_dados_forwarding(regs_pipeline: list[RegisterPipeline]):
-    if regs_pipeline[2].EX_MEM and regs_pipeline[1].ID_EX and regs_pipeline[3].MEM_WB:
-        if regs_pipeline[2].type == "r":
-            if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rs:
-                return FORWARDING_TYPES[0], regs_pipeline[2].instruction.result
-            if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rt:
-                return FORWARDING_TYPES[1], regs_pipeline[2].instruction.result
-        if regs_pipeline[3].type == "r":
-            if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rs:
-                return FORWARDING_TYPES[2], regs_pipeline[3].instruction.result
-            if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rt:
-                return FORWARDING_TYPES[3], regs_pipeline[3].instruction.result
+def check_instruction_hazard_dados_forwarding(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):
+    if regs_pipeline[3].instruction and regs_pipeline[1].instruction:
+        try:
+            index = instructions.index(regs_pipeline[1].instruction)
+            if regs_pipeline[3].instruction.type == "r" or regs_pipeline[3].instruction.type == "i" and regs_pipeline[3].instruction.result != "":
+                if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rs:
+                    instructions[index].hazard_rs = FORWARDING_TYPES_RS[1]
+                if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rt:
+                    instructions[index].hazard_rt = FORWARDING_TYPES_RT[1]
+        except:
+            pass
+
+    if regs_pipeline[2].instruction and regs_pipeline[1].instruction:
+        try:
+            index = instructions.index(regs_pipeline[1].instruction)
+            if regs_pipeline[2].instruction.type == "r" or regs_pipeline[2].instruction.type == "i":
+                if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rs:
+                    instructions[index].hazard_rs = FORWARDING_TYPES_RS[0]
+                if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rt:
+                    instructions[index].hazard_rt = FORWARDING_TYPES_RT[0]
+        except:
+            pass
 
 
 def check_hazards_dados_load(regs_pipeline: list[RegisterPipeline], instructions: list[Instruction]):

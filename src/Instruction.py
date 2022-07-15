@@ -37,7 +37,15 @@ class Instruction:
         self.rt = instruction_in_form_list[1 + has_label_start]
         self.str = instruction_string
         self.stage = None
+        self.rd = None
+        self.rs = None
+        self.rt_value = None
+        self.rs_value = None
+        self.immediate = None
         self.result = ""
+        self.hazard_rs = ""
+        self.hazard_rt = ""
+
 
         if self.opcode in LIST_PSEUDO:
             self.type = "p"
@@ -63,19 +71,21 @@ class Instruction:
                             self.rs = instruction_in_form_list[2 + has_label_start]
                         self.immediate = immediate
                     self.has_immediate = True
+                    self.rd = self.rt
                 case "r":
                     if name == "jr":
                         self.rs = instruction_in_form_list[1 + has_label_start]
-                        self.rt = '0'
-                        self.rd = '0'
-                    if name != "sll" and name != "srl":
+                        self.rt = '$zero'
+                        self.rd = '$zero'
+                    elif name != "sll" and name != "srl":
                         self.rd = instruction_in_form_list[1 + has_label_start]
                         self.rs = instruction_in_form_list[2 + has_label_start]
                         self.rt = instruction_in_form_list[3 + has_label_start]
                     else:
                         self.rs = instruction_in_form_list[1 + has_label_start]
-                        self.rt = '0'
+                        self.rt = '$zero'
                         self.rd = instruction_in_form_list[2 + has_label_start]
+                        self.immediate = instruction_in_form_list[3 + has_label_start]
                 case "j":
                     if has_label_final:
                         self.immediate = str(labels[instruction_in_form_list[-1]])
@@ -129,18 +139,20 @@ class Instruction:
 
     def __str__(self):
         text = ""
-        text += f"Nome = {self.name}\n"
-        text += f"Opcode = {self.opcode}\n"
-        text += f"Tipo = {self.type}\n"
 
-        if self.type != 'j' and not self.has_label_start:
-            text += f"RS = {self.rs}\n"
-            if self.name != "jr":
-                text += f"RT = {self.rt}\n"
-                if self.type == 'r':
-                    text += f"RD = {self.rd}\n"
-
-        if self.type == 'i' or self.type == 'j':
+        if self.name is not None:
+            text += f"Nome = {self.name} "
+        if self.opcode is not None:
+            text += f"Opcode = {self.opcode} "
+        if self.type is not None:
+            text += f"Tipo = {self.type} "
+        if self.rs is not None:
+            text += f"RS = {self.rs} "
+        if self.rt is not None:
+            text += f"RT = {self.rt} "
+        if self.rd is not None:
+            text += f"RD = {self.rd} "
+        if self.immediate is not None:
             text += f"Endereço/imediato = {self.immediate}"
 
         return text

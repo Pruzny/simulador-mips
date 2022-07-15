@@ -42,7 +42,7 @@ def read_asm() -> tuple[list, list]:
     continue_data = False
 
     try:
-        file = open("base/entrada.asm", 'r')
+        file = open("base/exemplo_hazard_lw.asm", 'r')
     except FileNotFoundError:
         file = open("base/exemplo.asm", 'r')
     for line in file.readlines():
@@ -59,7 +59,7 @@ def read_asm() -> tuple[list, list]:
             line = re.split(pattern, line.replace("\n", "").lower())
             for i in range(line.count("")):
                 line.remove("")
-            if len(line) > 0 and "#" not in line and "syscall" not in line and verificarFuncao(line):
+            if len(line) > 0 and "#" not in line and "syscall" not in line and verificarFuncao(line) and "la" not in line and "li" not in line:
                 instruction_list.append(line)
     if data_list.__len__() > 0:
         data_list.pop(0)

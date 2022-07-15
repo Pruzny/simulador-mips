@@ -1,4 +1,4 @@
-from src.hazard_detection.unidade_hazard_detection import check_instruction_hazard, create_bolha
+from src.hazard_detection.unidade_hazard_detection import check_instruction_hazard, create_bolha, check_instruction_hazard_dados_forwarding
 from src.interface import Info
 from src.pipeline_execution import RegisterPipeline
 from src.pipeline_execution.Simulador import Simulador
@@ -37,24 +37,27 @@ def set_instruction_exec_id(instruction, instruction_str: str, instruction_execu
     set_instruction(stage="ID", instruction=instruction_str)
     instruction_executadas["ID"] = instruction
     instruction.stage = "ID"
-
+    instruction.id()
 
 def set_instruction_exec_ex(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="EX", instruction=instruction_str)
     instruction_executadas["EX"] = instruction
     instruction.stage = "EX"
+    instruction.calculate()
 
 
 def set_instruction_exec_mem(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="MEM", instruction=instruction_str)
     instruction_executadas["MEM"] = instruction
     instruction.stage = "MEM"
+    instruction.mem()
 
 
 def set_instruction_exec_wb(instruction, instruction_str: str, instruction_executadas: dict):
     set_instruction(stage="WB", instruction=instruction_str)
     instruction_executadas["WB"] = instruction
     instruction.stage = "WB"
+    instruction.wb()
 
 
 def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict,
@@ -108,7 +111,6 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
             except:
                 set_instruction_vazia("IF")
             if not entry_in_exception:
-
                 entry_list, index, instruction_name = check_instruction_jump(instructions, registradores_pipeline)
                 if entry_list:
                     label = instruction_name.split(":")[1]
@@ -150,6 +152,7 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                     for i in range(len(Simulador.blocks[label])):
                         instructions.insert(index, Simulador.blocks[label][i])
                 check_instruction_hazard(instructions, registradores_pipeline)
+                check_instruction_hazard_dados_forwarding(instructions, registradores_pipeline)
                 set_instruction_exec_id(instructions_in_execution[2], instructions_in_execution[2].str,
                                         instruction_executadas)
                 set_instruction_exec_ex(instructions_in_execution[1], instructions_in_execution[1].str,
@@ -181,11 +184,12 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
             except:
                 reg_MEM_WB = False
 
-
             try:
                 check_instruction_hazard(instructions, registradores_pipeline)
             except:
                 entry_in_exception_check = True
+
+            check_instruction_hazard_dados_forwarding(instructions, registradores_pipeline)
 
             if not entry_in_exception_check:
                 try:
@@ -201,7 +205,6 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                 if reg_ID_EX:
                     entry_list, index, instruction_name = check_instruction_jump(instructions, registradores_pipeline)
                     if entry_list:
-                        print(instruction_name)
                         label = instruction_name.split(" ")[1]
                         for i in reversed(Simulador.blocks[label]):
                             instructions.insert(index, i)
