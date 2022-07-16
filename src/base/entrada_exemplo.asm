@@ -29,10 +29,6 @@ add $s1, $s1, $s2
 addi $t0, $t0, 1
 j FOR
 
-EXIT: li $v0, 4
-la $a0, media
-syscall
-
-sub $a0, $s1, $s0
+EXIT: sub $a0, $s1, $s0
 addi $v0, $zero, 1
 syscall

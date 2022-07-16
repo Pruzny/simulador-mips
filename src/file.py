@@ -42,7 +42,7 @@ def read_asm() -> tuple[list, list]:
     continue_data = False
 
     try:
-        file = open("base/exemplo_hazard_lw.asm", 'r')
+        file = open("base/entrada_exemplo.asm", 'r')
     except FileNotFoundError:
         file = open("base/exemplo.asm", 'r')
     for line in file.readlines():

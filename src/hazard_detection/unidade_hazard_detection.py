@@ -53,13 +53,15 @@ def check_hazards_dados_load(regs_pipeline: list[RegisterPipeline], instructions
 
 def check_hazard_controle_desvio(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):
     CAMINHO_TOMADO = False
-    if regs_pipeline[0].IF_ID:
+    if regs_pipeline[0].IF_ID and regs_pipeline[0].instruction is not None:
         if regs_pipeline[0].instruction.name in LIST_INSTRUCTION_DESVIO:
+            CAMINHO_TOMADO = regs_pipeline[0].instruction.result
             if CAMINHO_TOMADO:
                 bolha = create_bolha()
                 index = instructions.index(regs_pipeline[0].instruction)
-                instructions.insert(index, bolha)
-
+                instructions.insert(index+1, bolha)
+                return CAMINHO_TOMADO, index+2, regs_pipeline[0].instruction.str
+        return CAMINHO_TOMADO, 0, ""
 
 def check_instruction_hazard(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):
     """Recebe a lista de instrução que está sendo executada no pipeline"""
