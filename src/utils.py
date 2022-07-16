@@ -66,6 +66,5 @@ def to_read(txt: bool) -> None:
         with open("saida.bin", "rb") as file:
             byte = file.read(4)
             while byte:
-                print(format(int.from_bytes(byte, byteorder="big"), f"032b"))
                 byte = file.read(4)
             file.close()

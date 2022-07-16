@@ -46,7 +46,6 @@ class Instruction:
         self.hazard_rs = ""
         self.hazard_rt = ""
 
-
         if self.opcode in LIST_PSEUDO:
             self.type = "p"
             self.has_immediate = True
@@ -58,7 +57,7 @@ class Instruction:
             match self.type:
                 case "i":
                     if has_label_final:
-                        self.immediate = str(labels[instruction_in_form_list[-1]] - pos - 1)
+                        self.immediate = str(Simulador.labels[instruction_in_form_list[-1]] - pos - 1)
                     else:
                         immediate = instruction_in_form_list[-1]
                         if name == "lw" or name == "sw":
@@ -115,10 +114,15 @@ class Instruction:
             self.hazard_rt = ""
 
     def id(self):
-        if self.rs is not None:
-            self.rs_value = Info.REGS[self.rs]
-        if self.rt is not None:
-            self.rt_value = Info.REGS[self.rt]
+        if self.name != "j":
+            if self.rs is not None:
+                self.rs_value = Info.REGS[self.rs]
+            if self.rt is not None:
+                self.rt_value = Info.REGS[self.rt]
+            if self.name == "beq":
+                self.result = self.rs_value == self.rt_value
+            if self.name == "bne":
+                self.result = self.rs_value != self.rt_value
 
     def calculate(self) -> None:
         self.check_hazard()
@@ -131,10 +135,6 @@ class Instruction:
                 self.result = ""
                 for bit1, bit2 in zip(self.rs_value, self.rt_value):
                     self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
-            # case "beq":
-            #
-            # case "bne":
-            #
             # case "jal":
             #
             # case "jr":
