@@ -18,17 +18,6 @@ def read_instructions() -> tuple[dict[str, str], dict[str, str], dict[str, str]]
     return types, opcodes, functions
 
 
-def read_registers() -> dict[str, str]:
-    """Generates a dictionary mapping register name to its binary value."""
-    registers = dict()
-
-    for line in open("base/registers.txt", 'r').readlines():
-        line = line[:-1].split(';')
-        registers[line[0]] = line[1]
-
-    return registers
-
-
 def read_asm() -> tuple[list, list]:
     """Reads the input file and returns a list with each line as an element.
     If there is not an input file 'entrada.asm', it reads the default 'exemplo.asm' file."""

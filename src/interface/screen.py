@@ -1,5 +1,5 @@
 from src.Instruction import dec_to_hex
-from src.file import read_asm
+from file import read_asm
 from src.interface.assets import *
 from src.pipeline_execution.RegisterPipeline import RegisterPipeline
 from src.pipeline_execution.Simulador import Simulador

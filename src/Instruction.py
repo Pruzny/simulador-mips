@@ -1,4 +1,4 @@
-from src.file import *
+from file import *
 from src.interface import Info
 from src.pipeline_execution.Simulador import Simulador
 
