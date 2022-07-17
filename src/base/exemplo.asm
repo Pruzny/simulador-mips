@@ -1,14 +1,9 @@
-ADD $V0, $ZERO, $AT
-SUB $A1,$V1,$A0
-AND $T0,$A2,$A3
-TESTE: OR $T3,$T1,$T2
-SLL $T6,$T4,31
-SRL $S2,$S0,31
-JR $T0
-ADDI $T8,$S6,0
-LW $K1,32767($T9)
-AEW: SW $FP,-32768($GP)
-BEQ $RA,$T7,AEW
-BNE $T1,$T2,POW
-J TESTE
-POW: JAL AEW
+addi $s4, $zero, 30
+sw $s1, 20($s2)
+addi $s2, $zero, 20
+lw $s2, 20($s1)
+addi $s2, $zero, 19
+addi $s4, $zero, 15
+add $s6, $s4, $s2
+and $s4, $s2, $s5
+sw $s2, 20($s1)
