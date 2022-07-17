@@ -52,4 +52,3 @@ def transforming_instruction(list_instruction: list, labels: dict) -> list:
         lista_objetos_instructions.append(instruction_obj)  # Lista de objetos
 
     return lista_objetos_instructions
-

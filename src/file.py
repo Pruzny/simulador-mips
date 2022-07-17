@@ -2,7 +2,8 @@ import re
 
 
 def read_instructions() -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
-    """Generates dictionaries of types, opcodes and functions. Returns a tuple with each one mapping name to binary value."""
+    """Generates dictionaries of types, opcodes and functions.
+    Returns a tuple with each one mapping name to binary value."""
     types = dict()
     opcodes = dict()
     functions = dict()
@@ -29,7 +30,8 @@ def read_registers() -> dict[str, str]:
 
 
 def read_asm() -> tuple[list, list]:
-    """Reads the input file and returns a list with each line as an element. If there is not an input file 'entrada.asm', it reads the default 'exemplo.asm' file."""
+    """Reads the input file and returns a list with each line as an element.
+    If there is not an input file 'entrada.asm', it reads the default 'exemplo.asm' file."""
     pattern = r"[ ,]"
     instruction_list = list()
     data_list = list()

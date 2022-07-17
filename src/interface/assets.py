@@ -1,6 +1,5 @@
 from src.interface import *
 from src.pipeline_execution.PipelineExecution import execute
-from src.Instruction import dec_to_hex
 
 
 class Align:
@@ -187,7 +186,8 @@ class InstructionBox(TextBox):
             pg.draw.rect(self.image, self.border_color, (line_x, line_y, line_width, line_height),
                          border_radius=self.border_radius)
             pg.draw.rect(self.image, self.line_color, (
-                line_x + self.border, line_y + self.border, line_width - self.border * 2, line_height - self.border * 2),
+                line_x + self.border, line_y + self.border, line_width - self.border * 2,
+                line_height - self.border * 2),
                          border_radius=self.border_radius)
             line = self.font.render(instruction)
             self.image.blit(line, (
