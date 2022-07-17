@@ -1,3 +1,0 @@
-addi$zero$s00
-addi$zero$s10
-addi$zero$s20

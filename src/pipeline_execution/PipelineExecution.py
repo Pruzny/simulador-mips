@@ -1,9 +1,10 @@
-from src.hazard_detection.unidade_hazard_detection import check_instruction_hazard, create_bolha, check_instruction_hazard_dados_forwarding, check_hazard_controle_desvio
+from src.hazard_detection.unidade_hazard_detection import check_instruction_hazard, create_bolha, \
+    check_instruction_hazard_dados_forwarding, check_hazard_controle_desvio
 from src.interface import Info
 from src.pipeline_execution import RegisterPipeline
 from src.pipeline_execution.Simulador import Simulador
 
-LIST_JUMP = ["j"]
+LIST_JUMP = ["j", "jal"]
 
 
 def check_instruction_jump(instructions, regs_pipeline):
@@ -13,7 +14,7 @@ def check_instruction_jump(instructions, regs_pipeline):
             bolha = create_bolha()
             index = instructions.index(regs_pipeline[0].instruction)
             instructions.insert(index, bolha)
-            instructions.insert(index+1, bolha)
+            instructions.insert(index + 1, bolha)
             edit_list = True
             return edit_list, index + 2, regs_pipeline[1].instruction.str
     return edit_list, 0, ""
@@ -173,7 +174,6 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                 set_instruction_exec_mem(instructions_in_execution[0], instructions_in_execution[0].str,
                                          instruction_executadas)
         if cont >= 4:
-            # nomes_registradores_pipeline = ["IF_ID", "ID_EX", "EX_MEM", "MEM_WB"] = REG[0] = IF_ID | REG[1] = ID_EX | REG[2] = EX_MEM | REG[3] = MEM_WB
             entry_in_exception_check = False
             reg_IF_ID = True
             reg_ID_EX = True

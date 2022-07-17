@@ -28,12 +28,6 @@ def read_registers() -> dict[str, str]:
     return registers
 
 
-def verificarFuncao(line):
-    if ":" in line[-1] and line[-1][-1] == ":":
-        return False
-    return True
-
-
 def read_asm() -> tuple[list, list]:
     """Reads the input file and returns a list with each line as an element. If there is not an input file 'entrada.asm', it reads the default 'exemplo.asm' file."""
     pattern = r"[ ,]"
@@ -42,7 +36,7 @@ def read_asm() -> tuple[list, list]:
     continue_data = False
 
     try:
-        file = open("base/entrada_exemplo.asm", 'r')
+        file = open("base/entrada.asm", 'r')
     except FileNotFoundError:
         file = open("base/exemplo.asm", 'r')
     for line in file.readlines():
@@ -59,7 +53,7 @@ def read_asm() -> tuple[list, list]:
             line = re.split(pattern, line.replace("\n", "").lower())
             for i in range(line.count("")):
                 line.remove("")
-            if len(line) > 0 and "#" not in line and "syscall" not in line and verificarFuncao(line) and "la" not in line and "li" not in line:
+            if len(line) > 0 and "#" not in line and "syscall" not in line and "la" not in line and "li" not in line:
                 instruction_list.append(line)
     if data_list.__len__() > 0:
         data_list.pop(0)

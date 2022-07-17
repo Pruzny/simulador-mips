@@ -40,7 +40,8 @@ def start_values() -> None:
     Simulador.instructions = transforming_instruction(Simulador.list_asm, Simulador.labels)
     Simulador.instructions_queue = Simulador.instructions[:]
     Simulador.list_registers_pipeline = list(
-        RegisterPipeline(Simulador.nomes_registradores_pipeline[i]) for i in range(Simulador.QUANTIDADES_REGISTRADORES_PIPELINE))
+        RegisterPipeline(Simulador.nomes_registradores_pipeline[i]) for i in
+        range(Simulador.QUANTIDADES_REGISTRADORES_PIPELINE))
     for i in range(250):
         Info.DATA[dec_to_hex(i)] = dec_to_hex(0, 8)
     for label, index in Simulador.labels.items():

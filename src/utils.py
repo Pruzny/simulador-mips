@@ -24,7 +24,6 @@ def check_instruction(instruction_in_form_list: list[str], pos: int, labels: dic
         offset = 1
     if last_word_instruction.isalpha() or (last_word_instruction.isnumeric() and last_word_instruction.isalpha()):
         has_label_final = True
-
     if instruction_in_form_list[0 + offset] == "move":
         if has_label_init:
             instruction_in_form_list = [instruction_in_form_list[0], "add", instruction_in_form_list[2], "$zero",
@@ -41,7 +40,6 @@ def check_instruction(instruction_in_form_list: list[str], pos: int, labels: dic
 
 
 def transforming_instruction(list_instruction: list, labels: dict) -> list:
-    """Generates the output file. If '-t' flag is used, then the output file is a 'txt'. Otherwise, it is a 'bin' file."""
     lista_objetos_instructions = list()
     str_instruction = ""
     for i, l in enumerate(list_instruction):
@@ -55,16 +53,3 @@ def transforming_instruction(list_instruction: list, labels: dict) -> list:
 
     return lista_objetos_instructions
 
-
-def to_read(txt: bool) -> None:
-    """Prints each line of the corresponding output file."""
-    if txt:
-        with open("saida.txt", 'r') as file:
-            print(file.read())
-            file.close()
-    else:
-        with open("saida.bin", "rb") as file:
-            byte = file.read(4)
-            while byte:
-                byte = file.read(4)
-            file.close()

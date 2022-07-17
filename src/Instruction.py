@@ -114,7 +114,7 @@ class Instruction:
             self.hazard_rt = ""
 
     def id(self):
-        if self.name != "j":
+        if self.name != "j" and self.name != "jal":
             if self.rs is not None:
                 self.rs_value = Info.REGS[self.rs]
             if self.rt is not None:
@@ -126,38 +126,37 @@ class Instruction:
 
     def calculate(self) -> None:
         self.check_hazard()
-        match self.name:
-            case "add":
-                self.result = dec_to_hex(hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value), 8)
-            case "addi":
-                self.result = dec_to_hex(hex_to_dec(self.rs_value) + int(self.immediate), 8)
-            case "and":
-                self.result = ""
-                for bit1, bit2 in zip(self.rs_value, self.rt_value):
-                    self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
-            # case "jal":
-            #
-            # case "jr":
-            #
-            case "lw":
-                self.result = Info.DATA[dec_to_hex(hex_to_dec(self.rs_value), 4)]
-            case "or":
-                self.result = ""
-                for bit1, bit2 in zip(self.rs_value, self.rt_value):
-                    self.result += "1" if bit1 != "0" or bit2 != "0" else "0"
-            case "sll":
-                offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
-                self.result = self.rs_value[offset:] + "0" * int(offset)
-            case "srl":
-                offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
-                self.result = "0" * offset + self.rs_value[:8 - offset]
-            # case "sw":
-            #
-            case "sub":
-                value = hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value)
-                self.result = dec_to_hex(value, 8) if value >= 0 else dec_to_hex(0, 8)
-            case "li":
-                self.result = dec_to_hex(int(self.immediate), 8)
+        try:
+            match self.name:
+                case "add":
+                    self.result = dec_to_hex(hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value), 8)
+                case "addi":
+                    self.result = dec_to_hex(hex_to_dec(self.rs_value) + int(self.immediate), 8)
+                case "and":
+                    self.result = ""
+                    for bit1, bit2 in zip(self.rs_value, self.rt_value):
+                        self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
+                # case "jr":
+                #
+                case "lw":
+                    self.result = Info.DATA[dec_to_hex(hex_to_dec(self.rs_value), 4)]
+                case "or":
+                    self.result = ""
+                    for bit1, bit2 in zip(self.rs_value, self.rt_value):
+                        self.result += "1" if bit1 != "0" or bit2 != "0" else "0"
+                case "sll":
+                    offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
+                    self.result = self.rs_value[offset:] + "0" * int(offset)
+                case "srl":
+                    offset = int(self.immediate) if 0 <= int(self.immediate) <= 8 else 8
+                    self.result = "0" * offset + self.rs_value[:8 - offset]
+                case "sub":
+                    value = hex_to_dec(self.rs_value) + hex_to_dec(self.rt_value)
+                    self.result = dec_to_hex(value, 8) if value >= 0 else dec_to_hex(0, 8)
+                case "li":
+                    self.result = dec_to_hex(int(self.immediate), 8)
+        except:
+            print("Verifique o codigo, nao foi possivel calcular, verifique os registradores")
 
     def mem(self) -> None:
         self.check_hazard()
