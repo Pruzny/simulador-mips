@@ -17,6 +17,13 @@ def check_instruction_jump(instructions, regs_pipeline):
             instructions.insert(index + 1, bolha)
             edit_list = True
             return edit_list, index + 2, regs_pipeline[1].instruction.str
+        if regs_pipeline[1].instruction.name == "jr":
+            bolha = create_bolha()
+            index = regs_pipeline[1].instruction.result
+            instructions.insert(index, bolha)
+            instructions.insert(index + 1, bolha)
+            edit_list = True
+            return edit_list, index + 2, regs_pipeline[1].instruction.str
     return edit_list, 0, ""
 
 
