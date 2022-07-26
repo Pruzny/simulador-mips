@@ -1,9 +1,6 @@
-addi $s4, $zero, 30
-sw $s1, 20($s2)
-addi $s2, $zero, 20
-lw $s2, 20($s1)
-addi $s2, $zero, 19
-addi $s4, $zero, 15
-add $s6, $s4, $s2
-and $s4, $s2, $s5
-sw $s2, 20($s1)
+addi $s0, $zero, 4
+addi $t0, $zero, 0
+LOOP: beq $s0, $t0, ELSE
+addi $t0, $t0, 1
+j LOOP
+ELSE: sw $t0, 4($zero)

@@ -14,25 +14,30 @@ def create_bolha():
 
 
 def check_instruction_hazard_dados_forwarding(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):
-    if regs_pipeline[3].instruction and regs_pipeline[1].instruction:
+    offset = 1
+    if regs_pipeline[0].IF_ID and regs_pipeline[0].instruction.name in LIST_INSTRUCTION_DESVIO:
+        offset = 0
+
+    if regs_pipeline[3].instruction and regs_pipeline[offset].instruction:
         try:
-            index = instructions.index(regs_pipeline[1].instruction)
+            index = instructions.index(regs_pipeline[offset].instruction)
             if regs_pipeline[3].instruction.type == "r" or \
                     regs_pipeline[3].instruction.type == "i" and regs_pipeline[3].instruction.result != "":
-                if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rs:
+                if regs_pipeline[3].instruction.rd == regs_pipeline[offset].instruction.rs and regs_pipeline[3].instruction.rd != "$zero":
                     instructions[index].hazard_rs = FORWARDING_TYPES_RS[1]
-                if regs_pipeline[3].instruction.rd == regs_pipeline[1].instruction.rt:
+                if regs_pipeline[3].instruction.rd == regs_pipeline[offset].instruction.rt and regs_pipeline[3].instruction.rd != "$zero":
                     instructions[index].hazard_rt = FORWARDING_TYPES_RT[1]
         except:
             pass
 
-    if regs_pipeline[2].instruction and regs_pipeline[1].instruction:
+    if regs_pipeline[2].instruction and regs_pipeline[offset].instruction:
         try:
-            index = instructions.index(regs_pipeline[1].instruction)
-            if regs_pipeline[2].instruction.type == "r" or regs_pipeline[2].instruction.type == "i":
-                if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rs:
+            index = instructions.index(regs_pipeline[offset].instruction)
+            if regs_pipeline[2].instruction.type == "r" or \
+                    regs_pipeline[2].instruction.type == "i" and regs_pipeline[2].instruction.result != "":
+                if regs_pipeline[2].instruction.rd == regs_pipeline[offset].instruction.rs and regs_pipeline[2].instruction.rd != "$zero":
                     instructions[index].hazard_rs = FORWARDING_TYPES_RS[0]
-                if regs_pipeline[2].instruction.rd == regs_pipeline[1].instruction.rt:
+                if regs_pipeline[2].instruction.rd == regs_pipeline[offset].instruction.rt and regs_pipeline[2].instruction.rd != "$zero":
                     instructions[index].hazard_rt = FORWARDING_TYPES_RT[0]
         except:
             pass

@@ -120,6 +120,7 @@ class Instruction:
                 self.rs_value = Info.REGS[self.rs]
             if self.rt is not None:
                 self.rt_value = Info.REGS[self.rt]
+            self.check_hazard()
             if self.name == "beq":
                 self.result = self.rs_value == self.rt_value
             if self.name == "bne":
@@ -138,7 +139,7 @@ class Instruction:
                     for bit1, bit2 in zip(self.rs_value, self.rt_value):
                         self.result += "1" if bit1 != "0" and bit2 != "0" else "0"
                 case "jr":
-                    self.result = self.rs_value
+                    self.result = hex_to_dec(self.rs_value)
                 case "lw":
                     self.result = Info.DATA[dec_to_hex(hex_to_dec(self.rs_value), 4)]
                 case "or":
@@ -156,8 +157,10 @@ class Instruction:
                     self.result = dec_to_hex(value, 8) if value >= 0 else dec_to_hex(0, 8)
                 case "li":
                     self.result = dec_to_hex(int(self.immediate), 8)
-        except:
-            print("Verifique o codigo, nao foi possivel calcular, verifique os registradores")
+        except Exception as ex:
+            raise ex
+            print(f"Ocorreu um erro ao  calcular a instrucao {self.name}, Verifique o codigo, principalmente, verifique os registradores")
+
 
     def mem(self) -> None:
         self.check_hazard()
