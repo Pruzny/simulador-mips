@@ -58,7 +58,7 @@ def check_hazard_controle_desvio(instructions: list[Instruction], regs_pipeline:
                 index = instructions.index(regs_pipeline[0].instruction)
                 instructions.insert(index + 1, bolha)
                 return CAMINHO_TOMADO, index + 2, regs_pipeline[0].instruction.str
-        return CAMINHO_TOMADO, 0, ""
+    return CAMINHO_TOMADO, 0, ""
 
 
 def check_instruction_hazard(instructions: list[Instruction], regs_pipeline: list[RegisterPipeline]):

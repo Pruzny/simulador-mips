@@ -107,79 +107,108 @@ def execute_pipeline(cont: int, instructions: list, instruction_executadas: dict
                 set_instruction_exec_if(instructions_in_execution[0], instructions_in_execution[0].str,
                                         instruction_executadas)
             except:
-                set_instruction_vazia("IF")
+                set_instruction_vazia("ID")
         if cont == 1:
+            reg_IF_ID = True
             try:
                 registradores_pipeline[0].instruction = instructions_in_execution[0]
-                set_caminho_desvio(instructions, registradores_pipeline)
-                set_instruction_exec_id(instructions_in_execution[0], instructions_in_execution[0].str,
-                                        instruction_executadas)
             except:
-                set_instruction_vazia("IF")
+                reg_IF_ID = False
             try:
                 set_instruction_exec_if(instructions_in_execution[1], instructions_in_execution[1].str,
                                         instruction_executadas)
             except:
+                set_instruction_vazia("IF")
+            if reg_IF_ID:
+                set_instruction_exec_id(instructions_in_execution[0], instructions_in_execution[0].str,
+                                        instruction_executadas)
+                set_caminho_desvio(instructions, registradores_pipeline)
+            else:
                 set_instruction_vazia("ID")
-
         if cont == 2:
-            entry_in_exception = False
+            entry_in_exception_check = False
+            reg_IF_ID = True
+            reg_ID_EX = True
             try:
                 registradores_pipeline[0].instruction = instructions_in_execution[1]
-                set_caminho_desvio(instructions, registradores_pipeline)
             except:
-                set_instruction_vazia("ID")
-                entry_in_exception = True
+                reg_IF_ID = False
             try:
                 registradores_pipeline[1].instruction = instructions_in_execution[0]
             except:
-                set_instruction_vazia("EX")
-                entry_in_exception = True
-            try:
-                set_instruction_exec_if(instructions_in_execution[2], instructions_in_execution[2].str,
-                                        instruction_executadas)
-            except:
-                set_instruction_vazia("IF")
-            if not entry_in_exception:
-                set_caminho_jump(instructions, registradores_pipeline)
-                check_instruction_hazard(instructions, registradores_pipeline)
-                set_instruction_exec_id(instructions_in_execution[1], instructions_in_execution[1].str,
-                                        instruction_executadas)
-                set_instruction_exec_ex(instructions_in_execution[0], instructions_in_execution[0].str,
-                                        instruction_executadas)
+                reg_ID_EX = False
 
+            try:
+                check_instruction_hazard(instructions, registradores_pipeline)
+            except:
+                entry_in_exception_check = True
+
+            if not entry_in_exception_check:
+                try:
+                    set_instruction_exec_if(instructions_in_execution[2], instructions_in_execution[2].str,
+                                            instruction_executadas)
+                except:
+                    set_instruction_vazia("IF")
+                if reg_IF_ID:
+                    set_instruction_exec_id(instructions_in_execution[1], instructions_in_execution[1].str,
+                                            instruction_executadas)
+                    set_caminho_desvio(instructions, registradores_pipeline)
+                else:
+                    set_instruction_vazia("ID")
+                if reg_ID_EX:
+                    set_caminho_jump(instructions, registradores_pipeline)
+                    set_instruction_exec_ex(instructions_in_execution[0], instructions_in_execution[0].str,
+                                            instruction_executadas)
+                else:
+                    set_instruction_vazia("EX")
         if cont == 3:
-            entry_in_exception = False
+            entry_in_exception_check = False
+            reg_IF_ID = True
+            reg_ID_EX = True
+            reg_EX_MEM = True
+
             try:
                 registradores_pipeline[0].instruction = instructions_in_execution[2]
-                set_caminho_desvio(instructions, registradores_pipeline)
             except:
-                set_instruction_vazia("ID")
-                entry_in_exception = True
+                reg_IF_ID = False
             try:
                 registradores_pipeline[1].instruction = instructions_in_execution[1]
             except:
-                set_instruction_vazia("EX")
-                entry_in_exception = True
+                reg_ID_EX = False
             try:
                 registradores_pipeline[2].instruction = instructions_in_execution[0]
             except:
-                set_instruction_vazia("MEM")
+                reg_EX_MEM = False
+
             try:
-                set_instruction_exec_if(instructions_in_execution[3], instructions_in_execution[3].str,
-                                        instruction_executadas)
-            except:
-                set_instruction_vazia("IF")
-            if not entry_in_exception:
-                set_caminho_jump(instructions, registradores_pipeline)
                 check_instruction_hazard(instructions, registradores_pipeline)
                 check_instruction_hazard_dados_forwarding(instructions, registradores_pipeline)
-                set_instruction_exec_id(instructions_in_execution[2], instructions_in_execution[2].str,
-                                        instruction_executadas)
-                set_instruction_exec_ex(instructions_in_execution[1], instructions_in_execution[1].str,
-                                        instruction_executadas)
-                set_instruction_exec_mem(instructions_in_execution[0], instructions_in_execution[0].str,
-                                         instruction_executadas)
+            except:
+                entry_in_exception_check = True
+
+            if not entry_in_exception_check:
+                try:
+                    set_instruction_exec_if(instructions_in_execution[3], instructions_in_execution[3].str,
+                                            instruction_executadas)
+                except:
+                    set_instruction_vazia("IF")
+                if reg_IF_ID:
+                    set_instruction_exec_id(instructions_in_execution[2], instructions_in_execution[2].str,
+                                            instruction_executadas)
+                    set_caminho_desvio(instructions, registradores_pipeline)
+                else:
+                    set_instruction_vazia("ID")
+                if reg_ID_EX:
+                    set_caminho_jump(instructions, registradores_pipeline)
+                    set_instruction_exec_ex(instructions_in_execution[1], instructions_in_execution[1].str,
+                                            instruction_executadas)
+                else:
+                    set_instruction_vazia("EX")
+                if reg_EX_MEM:
+                    set_instruction_exec_mem(instructions_in_execution[0], instructions_in_execution[0].str,
+                                             instruction_executadas)
+                else:
+                    set_instruction_vazia("MEM")
         if cont >= 4:
             entry_in_exception_check = False
             reg_IF_ID = True
